@@ -28,7 +28,11 @@ app.post("/generate-shortlink", async (c) => {
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     const shortCode = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
-    await c.env.linkshortner.put(shortCode, url);
+    const oneYearInSeconds = 365 * 24 * 60 * 60; // 365 days * 24 hours * 60 minutes * 60 seconds
+
+    await c.env.linkshortner.put(shortCode, url, {
+      expirationTtl: oneYearInSeconds
+    });
 
     const shortUrl = `https://lss.dishantpal.com/l/${shortCode}`;
 
