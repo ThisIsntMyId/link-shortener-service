@@ -1,19 +1,96 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Hello, World!</title>
-	</head>
-	<body>
-		<h1 id="heading"></h1>
-		<script>
-			fetch('/message')
-				.then((resp) => resp.text())
-				.then((text) => {
-					const h1 = document.getElementById('heading');
-					h1.textContent = text;
-				});
-		</script>
-	</body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL Shortener</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+  <div class="max-w-md w-full bg-white rounded-lg shadow-md p-6">
+    <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">URL Shortener</h1>
+    
+    <div class="mb-4">
+      <label for="apiUrl" class="block text-sm font-medium text-gray-700 mb-1">API Base URL</label>
+      <input type="url" id="apiUrl" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" 
+        value="https://lss.dishantpal.com" placeholder="https://your-api-url.com">
+    </div>
+    
+    <form id="urlForm" class="space-y-4">
+      <div>
+        <label for="longUrl" class="block text-sm font-medium text-gray-700 mb-1">URL to Shorten</label>
+        <input type="url" id="longUrl" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" 
+          placeholder="https://example.com/your/long/url">
+      </div>
+      
+      <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        Shorten URL
+      </button>
+    </form>
+    
+    <div id="result" class="mt-6 hidden">
+      <div class="border-t border-gray-200 pt-4">
+        <h2 class="text-lg font-medium text-gray-800 mb-2">Your Shortened URL</h2>
+        <div class="flex items-center">
+          <input type="text" id="shortUrl" class="flex-1 px-3 py-2 border border-gray-300 rounded-l-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" readonly>
+          <button id="copyBtn" class="bg-gray-200 px-3 py-2 border border-l-0 border-gray-300 rounded-r-md hover:bg-gray-300 focus:outline-none">
+            Copy
+          </button>
+        </div>
+        <p id="statusMsg" class="mt-2 text-sm text-green-600"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('urlForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const longUrl = document.getElementById('longUrl').value;
+      const apiUrl = document.getElementById('apiUrl').value;
+      const resultDiv = document.getElementById('result');
+      const statusMsg = document.getElementById('statusMsg');
+      
+      try {
+        const response = await fetch(`${apiUrl}/generate-shortlink`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ url: longUrl })
+        });
+        
+        const data = await response.json();
+        
+        if (data.status) {
+          document.getElementById('shortUrl').value = data.data.shortUrl;
+          resultDiv.classList.remove('hidden');
+          statusMsg.textContent = data.message;
+          statusMsg.className = 'mt-2 text-sm text-green-600';
+        } else {
+          statusMsg.textContent = data.message || 'Error shortening URL';
+          statusMsg.className = 'mt-2 text-sm text-red-600';
+          resultDiv.classList.remove('hidden');
+        }
+      } catch (error) {
+        statusMsg.textContent = 'Error connecting to API';
+        statusMsg.className = 'mt-2 text-sm text-red-600';
+        resultDiv.classList.remove('hidden');
+      }
+    });
+    
+    document.getElementById('copyBtn').addEventListener('click', function() {
+      const shortUrl = document.getElementById('shortUrl');
+      shortUrl.select();
+      document.execCommand('copy');
+      
+      const statusMsg = document.getElementById('statusMsg');
+      statusMsg.textContent = 'Copied to clipboard!';
+      setTimeout(() => {
+        statusMsg.textContent = '';
+      }, 2000);
+    });
+  </script>
+</body>
 </html>
