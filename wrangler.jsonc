@@ -18,6 +18,14 @@
     {
       "pattern": "lss.dishantpal.com",
       "custom_domain": true
+    },
+    {
+      "pattern": "lssa.dishantpal.com",
+      "custom_domain": true
+    },
+    {
+      "pattern": "lssb.dishantpal.com",
+      "custom_domain": true
     }
   ],
   /**
