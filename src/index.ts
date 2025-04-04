@@ -34,14 +34,11 @@ app.post("/generate-shortlink", async (c) => {
       expirationTtl: oneYearInSeconds
     });
 
-    const shortUrl = `https://lss.dishantpal.com/l/${shortCode}`;
-
     return c.json({
       status: true,
       message: "Short link generated successfully",
       data: {
         shortCode,
-        shortUrl
       }
     });
   } catch (error) {
