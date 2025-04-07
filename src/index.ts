@@ -3,6 +3,7 @@ import { cors } from "hono/cors";
 
 interface CloudflareBindings {
   linkshortner: KVNamespace;
+  API_TOKEN: string;
 }
 
 const app = new Hono<{ Bindings: CloudflareBindings }>();
@@ -12,6 +13,17 @@ app.use("*", cors());
 app.post("/generate-shortlink", async (c) => {
   try {
     const { url } = await c.req.json<{ url: string }>();
+
+    const providedToken = c.req.header("X-API-TOKEN");
+    const validToken = c.env.API_TOKEN;
+
+    if (!providedToken || providedToken !== validToken) {
+      return c.json({
+        status: false,
+        message: "Unauthorized - Invalid or missing API token",
+        data: null
+      }, 401);
+    }
 
     if (!url) {
       return c.json({
@@ -50,7 +62,7 @@ app.post("/generate-shortlink", async (c) => {
   }
 });
 
-app.get("/l/:code", async (c) => {
+app.get("/:code", async (c) => {
   try {
     const code = c.req.param("code");
 
