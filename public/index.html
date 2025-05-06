@@ -94,7 +94,9 @@
         const data = await response.json();
         
         if (data.status) {
-          document.getElementById('shortUrl').value = `${apiUrl}/l/${data.data.shortCode}`;
+          // Create the full short URL from base URL + /l/ + shortCode
+          const shortUrl = `${apiUrl}/${data.data.shortCode}`;
+          document.getElementById('shortUrl').value = shortUrl;
           resultDiv.classList.remove('hidden');
           statusMsg.textContent = data.message;
           statusMsg.className = 'mt-2 text-sm text-green-600';
