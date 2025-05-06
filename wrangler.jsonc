@@ -16,7 +16,7 @@
   },
   "routes": [
     {
-      "pattern": "conn.joinminimal.com",
+      "pattern": "lss.dishantpal.com",
       "custom_domain": true
     }
   ],
@@ -35,7 +35,7 @@
   "kv_namespaces": [
     {
       "binding": "linkshortner",
-      "id": "822a59c9511a4a6ebf83ee559a84b80a"
+      "id": "f462bea3d4ba4ddcaccbe87d20248088"
     }
   ],
   "account_id": "90b28a1f227a3375b5047b8511a2ed6d"
