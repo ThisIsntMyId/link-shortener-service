@@ -79,7 +79,7 @@
         const data = await response.json();
         
         if (data.status) {
-          document.getElementById('shortUrl').value = data.data.shortUrl;
+          document.getElementById('shortUrl').value = `${apiUrl}/l/${data.data.shortCode}`;
           resultDiv.classList.remove('hidden');
           statusMsg.textContent = data.message;
           statusMsg.className = 'mt-2 text-sm text-green-600';
